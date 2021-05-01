@@ -9,22 +9,6 @@ using namespace std;
 
 using edge = pair<int, int>;
 
-bool isVertexCover(vector<int> V, vector<edge> E) {
-    set<int> V_set(V.begin(), V.end());
-    for (auto e : E) {
-        if (V_set.find(e.first) == V_set.end() && V_set.find(e.second) == V_set.end()) {
-            return false;
-        }
-    }
-    return true;
-}
-
-uint64_t total_nodes = 0;
-vector<edge> E;
-int v, e, a, b;
-int minimum_sol = INT8_MAX;
-vector<int> vector_sol;
-
 void printVector(vector<int> V) {
     cout << "[ ";
     for (int i = 0; i < V.size(); i++) {
@@ -33,13 +17,38 @@ void printVector(vector<int> V) {
     cout << "]";
 }
 
+bool isVertexCover(vector<int> V, vector<edge> E, int total_v) {
+    set<int> visited;
+    for (auto current_v : V) {
+        visited.insert(current_v);
+        for (auto e : E) {
+            if (current_v == e.first) {
+                visited.insert(e.second);
+            } else if (current_v == e.second) {
+                visited.insert(e.first);
+            }
+        }
+    }
+    if (visited.size() == total_v) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+uint64_t total_nodes = 0;
+vector<edge> E;
+int v, e, a, b;
+int minimum_sol = INT8_MAX;
+vector<int> vector_sol;
+
 void search(vector<int> V, int lastNode) {
     total_nodes += 1;
     int s = V.size();
     bool ret = false;
 
     string ans;
-    if (isVertexCover(V, E)) {
+    if (isVertexCover(V, E, v)) {
         ans = " TRUE";
 #pragma omp critical
         {
